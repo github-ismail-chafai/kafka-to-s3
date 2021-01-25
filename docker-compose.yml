@@ -66,10 +66,9 @@ services:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "1"
       CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
       CONNECT_PLUGIN_PATH: '/usr/share/java,/usr/share/confluent-hub-components/,/connectors/'
-      AWS_ACCESS_KEY_ID: XXXXXX
-      AWS_SECRET_ACCESS_KEY: YYYYYYY
     volumes:
       - $PWD/connectors:/connectors
+      - $PWD/aws_credentials:/root/.aws/credentials
     command: 
       - bash 
       - -c 
