@@ -1,0 +1,80 @@
+= Publishing data to Kafka and then streaming the data from Kafka to S3 using Kafka Connect
+ 
+  
+   
+{nbsp} +
+{nbsp} +
+
+1. First publish the image of your Kafka producer
++
+[source,bash]
+----
+sbt docker:publishLocal
+----
+and make sure the image was published
++
+[source,bash]
+----
+docker images | grep "producer-app"
+----
+
+
+2. Update `aws_credentials` with your S3 credentials
+3. Bring the Docker Compose up
++
+[source,bash]
+----
+docker-compose up -d
+----
+4. Look at the Kafka-producer/Schema-registry integration
++
+[source,bash]
+----
+curl -s "http://localhost:8081/subjects/test-value/versions/latest" | jq
+----
+5. Make sure everything is up and running
++
+[source,bash]
+----
+$ docker-compose ps
+     Name                  Command               State                    Ports
+---------------------------------------------------------------------------------------------
+kafka            /etc/confluent/docker/run     Up             0.0.0.0:9092->9092/tcp
+kafka-connect    bash -c #                     Up (healthy)   0.0.0.0:8083->8083/tcp, 9092/tcp
+                 echo "Installing ...
+kafka-producer   /opt/docker/bin/producer-app  Up             8080/tcp
+schema-registry  /etc/confluent/docker/run     Up             0.0.0.0:8081->8081/tcp
+zookeeper        /etc/confluent/docker/run     Up             2181/tcp, 2888/tcp, 3888/tcp
+
+----
+
+6. Create the S3 Sink connector, you need to customize at least `s3.region` and `s3.bucket.name`
++
+[source,javascript]
+----
+curl -i -X PUT -H "Accept:application/json" \
+    -H  "Content-Type:application/json" http://localhost:8083/connectors/sink-s3-test/config \
+    -d '
+ {
+        "connector.class": "io.confluent.connect.s3.S3SinkConnector",
+        "key.converter":"org.apache.kafka.connect.storage.StringConverter",
+        "tasks.max": "1",
+        "topics": "test",
+        "s3.region": "eu-west-1",
+        "s3.bucket.name": "ismail-chafai-test",
+        "flush.size": "100",
+        "storage.class": "io.confluent.connect.s3.storage.S3Storage",
+        "format.class": "io.confluent.connect.s3.format.parquet.ParquetFormat",
+        "schema.generator.class": "io.confluent.connect.storage.hive.schema.DefaultSchemaGenerator",
+        "schema.compatibility": "NONE",
+        "partitioner.class": "io.confluent.connect.storage.partitioner.DefaultPartitioner"
+        }
+'
+----
+'''
+
+References
+
+* https://hub.confluent.io[Confluent Hub]
+* https://docs.confluent.io/current/connect/kafka-connect-s3/index.html#connect-s3[S3 Sink connector docs]
+* https://github.com/confluentinc/demo-scene[Confluent demo scene]
