@@ -1,1 +1,6 @@
 aws_credentials
+.idea/
+project/project/
+project/target/
+target/
+.DS_Store
