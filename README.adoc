@@ -71,6 +71,12 @@ curl -i -X PUT -H "Accept:application/json" \
         }
 '
 ----
+7. When done testing, clean the stack
++
+[source,bash]
+----
+docker-compose down -v --rmi all --remove-orphans
+----
 '''
 
 References
