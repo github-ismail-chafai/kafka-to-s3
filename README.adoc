@@ -19,20 +19,19 @@ docker images | grep "producer-app"
 ----
 
 
-2. Update `aws_credentials` with your S3 credentials
-3. Bring the Docker Compose up
+2. Bring the Docker Compose up
 +
 [source,bash]
 ----
 docker-compose up -d
 ----
-4. Look at the Kafka-producer/Schema-registry integration
+3. Look at the Kafka-producer/Schema-registry integration
 +
 [source,bash]
 ----
 curl -s "http://localhost:8081/subjects/test-value/versions/latest" | jq
 ----
-5. Make sure everything is up and running
+4. Make sure everything is up and running
 +
 [source,bash]
 ----
@@ -48,7 +47,7 @@ zookeeper        /etc/confluent/docker/run     Up             2181/tcp, 2888/tcp
 
 ----
 
-6. Create the S3 Sink connector, you need to customize at least `s3.region` and `s3.bucket.name`
+5. Create the S3 Sink connector
 +
 [source,javascript]
 ----
@@ -73,16 +72,15 @@ curl -i -X PUT -H "Accept:application/json" \
 '
 ----
 
-7. You can check the output of kafka-connect by browsing:
+6. You can check the output of kafka-connect by browsing, using `login: minioadmin` and `password: minioadmin`
 +
 [source,bash]
 ----
 http://localhost:9000/
 ----
-(login: "minioadmin", password: "minioadmin")
 +
 
-8. When done testing, clean the stack
+7. When done testing, clean the stack
 +
 [source,bash]
 ----
