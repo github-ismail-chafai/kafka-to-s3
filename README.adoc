@@ -60,9 +60,10 @@ curl -i -X PUT -H "Accept:application/json" \
         "key.converter":"org.apache.kafka.connect.storage.StringConverter",
         "tasks.max": "1",
         "topics": "test",
+        "store.url": "http://minio:9000",
         "s3.region": "eu-west-1",
-        "s3.bucket.name": "ismail-chafai-test",
-        "flush.size": "100",
+        "s3.bucket.name": "test",
+        "flush.size": "10",
         "storage.class": "io.confluent.connect.s3.storage.S3Storage",
         "format.class": "io.confluent.connect.s3.format.parquet.ParquetFormat",
         "schema.generator.class": "io.confluent.connect.storage.hive.schema.DefaultSchemaGenerator",
@@ -71,7 +72,17 @@ curl -i -X PUT -H "Accept:application/json" \
         }
 '
 ----
-7. When done testing, clean the stack
+
+7. You can check the output of kafka-connect by browsing:
++
+[source,bash]
+----
+http://localhost:9000/
+----
+(login: "minioadmin", password: "minioadmin")
++
+
+8. When done testing, clean the stack
 +
 [source,bash]
 ----

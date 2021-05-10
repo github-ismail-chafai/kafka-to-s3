@@ -88,3 +88,21 @@ services:
     depends_on:
       - kafka
       - schema-registry
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+    command:
+      server /data
+
+  aws:
+    image: amazon/aws-cli
+    command: -c "sleep 2 && aws --endpoint-url http://minio:9000 s3 mb s3://test --region eu-west-1 || exit 0"
+    entrypoint: [/bin/bash]
+    environment: 
+      AWS_ACCESS_KEY_ID: "minioadmin"
+      AWS_SECRET_ACCESS_KEY: "minioadmin"
+    depends_on: 
+      - minio
+
