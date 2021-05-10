@@ -1,9 +1,17 @@
 = Publishing data to Kafka and then streaming the data from Kafka to S3 using Kafka Connect
  
-  
+
    
 {nbsp} +
 {nbsp} +
+
+*Description* 
+
+A Scala App writes avro records to kafka using Kafka Schema Registry, then we use Kafka Connect to read data from Kafka and sink the data in S3. We use MinIO docker image to mock S3. 
+
+{nbsp} +
+
+
 
 1. First publish the image of your Kafka producer
 +
@@ -72,12 +80,12 @@ curl -i -X PUT -H "Accept:application/json" \
 '
 ----
 
-6. You can check the output of kafka-connect by browsing, using `login: minioadmin` and `password: minioadmin`
+6. You can check the output of kafka-connect by browsing, using `login: minioadmin` and `password: minioadmin` 
 +
 [source,bash]
 ----
 http://localhost:9000/
-----
+----    
 +
 
 7. When done testing, clean the stack
