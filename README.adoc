@@ -60,23 +60,36 @@ zookeeper        /etc/confluent/docker/run     Up             2181/tcp, 2888/tcp
 [source,javascript]
 ----
 curl -i -X PUT -H "Accept:application/json" \
-    -H  "Content-Type:application/json" http://localhost:8083/connectors/sink-s3-test/config \
-    -d '
- {
-        "connector.class": "io.confluent.connect.s3.S3SinkConnector",
-        "key.converter":"org.apache.kafka.connect.storage.StringConverter",
-        "tasks.max": "1",
-        "topics": "test",
-        "store.url": "http://minio:9000",
-        "s3.region": "eu-west-1",
-        "s3.bucket.name": "test",
-        "flush.size": "10",
-        "storage.class": "io.confluent.connect.s3.storage.S3Storage",
-        "format.class": "io.confluent.connect.s3.format.parquet.ParquetFormat",
-        "schema.generator.class": "io.confluent.connect.storage.hive.schema.DefaultSchemaGenerator",
-        "schema.compatibility": "NONE",
-        "partitioner.class": "io.confluent.connect.storage.partitioner.DefaultPartitioner"
-        }
+  -H  "Content-Type:application/json" http://localhost:8083/connectors/sink-s3-test/config \
+  -d '
+{
+  "connector.class": "io.confluent.connect.s3.S3SinkConnector",
+  "key.converter":"org.apache.kafka.connect.storage.StringConverter",
+  "tasks.max": "1",
+  "topics": "test",
+  "store.url": "http://minio:9000",
+  "s3.region": "eu-west-1",
+  "s3.bucket.name": "test",
+  "flush.size": "50000000",
+  "storage.class": "io.confluent.connect.s3.storage.S3Storage",
+  "format.class": "io.confluent.connect.s3.format.parquet.ParquetFormat",
+  "schema.compatibility": "NONE",
+  "partitioner.class": "io.confluent.connect.storage.partitioner.TimeBasedPartitioner",
+  "timezone" : "UTC",
+  "locale": "en",
+  "rotate.schedule.interval.ms": "300000",
+  "rotate.interval.ms": "900000",
+  "partition.duration.ms": "3600000",
+  "path.format": "YYYY/M/d/H",
+  "timestamp.extractor": "RecordField",
+  "timestamp.field" : "timestamp",
+  "topics.dir" : "",
+  "schema.compatibility": "FULL",
+  "transforms": "AddMetadata",
+  "transforms.AddMetadata.type": "org.apache.kafka.connect.transforms.InsertField$Value",
+  "transforms.AddMetadata.offset.field": "_offset",
+  "transforms.AddMetadata.partition.field": "_partition"
+}
 '
 ----
 
