@@ -1,17 +1,18 @@
 import java.util.Properties
-
 import java.time.Instant
 import org.apache.avro.Schema.Parser
 import org.apache.avro.generic.GenericData
-import org.apache.kafka.clients.producer.{ KafkaProducer, ProducerRecord }
+import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 import com.typesafe.scalalogging.Logger
 import org.slf4j.LoggerFactory
+
+import scala.util.Random
 
 object Producer extends App {
   val logger = Logger(LoggerFactory.getLogger("ProducerLogger"))
 
   logger.info("Waiting for schema registry to fully start")
-  Thread.sleep(100000)
+  Thread.sleep(1000*60)
 
   val kafkaBootstrapServer = "kafka:29092"
   val schemaRegistryUrl = "http://schema-registry:8081"
@@ -53,11 +54,14 @@ object Producer extends App {
   val valueSchemaAvro = schemaParser.parse(valueSchemaJson)
   val avroRecord = new GenericData.Record(valueSchemaAvro)
 
+  val startTimestamp = Instant.now.toEpochMilli / (1000 * 60 * 60) * (1000 * 60 * 60)
+  val ts = startTimestamp
+
   try {
     while (true) {
 
       avroRecord.put("uuid", java.util.UUID.randomUUID.toString)
-      avroRecord.put("timestamp", Instant.now.toEpochMilli)
+      avroRecord.put("timestamp", startTimestamp - Random.nextInt(2)) // 11h 59min 59sec 59ms or 12h 00min 00sec 00ms
 
       val record = new ProducerRecord(topicName, topicName + "_Key", avroRecord)
       val ack = producer.send(record).get()
