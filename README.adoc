@@ -75,7 +75,12 @@ curl -i -X PUT -H "Accept:application/json" \
         "format.class": "io.confluent.connect.s3.format.parquet.ParquetFormat",
         "schema.generator.class": "io.confluent.connect.storage.hive.schema.DefaultSchemaGenerator",
         "schema.compatibility": "NONE",
-        "partitioner.class": "io.confluent.connect.storage.partitioner.DefaultPartitioner"
+        "partitioner.class": "io.confluent.connect.storage.partitioner.DefaultPartitioner",
+        "transforms":"filterExample1",
+        "transforms.filterExample1.type":"io.confluent.connect.transforms.Filter$Value",
+        "transforms.filterExample1.filter.condition":"$.[?(@.samplingField < 15)]",
+        "transforms.filterExample1.filter.type":"include",
+        "transforms.filterExample1.missing.or.null.behavior":"fail"
         }
 '
 ----

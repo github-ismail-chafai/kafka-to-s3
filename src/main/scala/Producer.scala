@@ -7,6 +7,8 @@ import org.apache.kafka.clients.producer.{ KafkaProducer, ProducerRecord }
 import com.typesafe.scalalogging.Logger
 import org.slf4j.LoggerFactory
 
+import scala.util.Random
+
 object Producer extends App {
   val logger = Logger(LoggerFactory.getLogger("ProducerLogger"))
 
@@ -46,6 +48,14 @@ object Producer extends App {
                            |          "long"
                            |         ],
                            |         "default":null
+                           |     },
+                           |     {
+                           |        "name":"samplingField",
+                           |        "type":[
+                           |          "null",
+                           |          "int"
+                           |         ],
+                           |         "default":null
                            |     }
                            |  ]
                            |}""".stripMargin
@@ -58,6 +68,7 @@ object Producer extends App {
 
       avroRecord.put("uuid", java.util.UUID.randomUUID.toString)
       avroRecord.put("timestamp", Instant.now.toEpochMilli)
+      avroRecord.put("samplingField", Random.between(0,100))
 
       val record = new ProducerRecord(topicName, topicName + "_Key", avroRecord)
       val ack = producer.send(record).get()
