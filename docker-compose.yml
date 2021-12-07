@@ -65,10 +65,11 @@ services:
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: "1"
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "1"
       CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
-      CONNECT_PLUGIN_PATH: '/usr/share/java,/usr/share/confluent-hub-components/,/connectors/'
+      CONNECT_PLUGIN_PATH: '/usr/share/java,/usr/share/confluent-hub-components,/connectors'
     volumes:
       - $PWD/connectors:/connectors
       - $PWD/aws_credentials:/root/.aws/credentials
+      - $PWD/service-account.json:/root/bq-service-account.json
     command: 
       - bash 
       - -c 
@@ -76,6 +77,8 @@ services:
         #
         echo "Installing connector plugins"
         confluent-hub install --no-prompt confluentinc/kafka-connect-s3:5.4.1
+        confluent-hub install --no-prompt confluentinc/connect-transforms:1.4.1
+        confluent-hub install --no-prompt wepay/kafka-connect-bigquery:2.1.9
         #
         echo "Launching Kafka Connect worker"
         /etc/confluent/docker/run & 

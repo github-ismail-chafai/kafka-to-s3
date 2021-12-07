@@ -63,19 +63,26 @@ curl -i -X PUT -H "Accept:application/json" \
     -H  "Content-Type:application/json" http://localhost:8083/connectors/sink-s3-test/config \
     -d '
  {
-        "connector.class": "io.confluent.connect.s3.S3SinkConnector",
+        "connector.class": "com.wepay.kafka.connect.bigquery.BigQuerySinkConnector",
         "key.converter":"org.apache.kafka.connect.storage.StringConverter",
         "tasks.max": "1",
         "topics": "test",
-        "store.url": "http://minio:9000",
-        "s3.region": "eu-west-1",
-        "s3.bucket.name": "test",
-        "flush.size": "10",
-        "storage.class": "io.confluent.connect.s3.storage.S3Storage",
-        "format.class": "io.confluent.connect.s3.format.parquet.ParquetFormat",
-        "schema.generator.class": "io.confluent.connect.storage.hive.schema.DefaultSchemaGenerator",
-        "schema.compatibility": "NONE",
-        "partitioner.class": "io.confluent.connect.storage.partitioner.DefaultPartitioner"
+        "sanitizeTopics" : "true",
+        "autoCreateTables" : "true",
+        "autoUpdateSchemas" : "true",
+        "schemaRetriever" : "com.wepay.kafka.connect.bigquery.retrieve.IdentitySchemaRetriever",
+        "schemaRegistryLocation":"http://localhost:8081",
+        "bufferSize": "100000",
+        "maxWriteSize":"10000",
+        "tableWriteWait": "1000",
+        "transforms":"filterExample1",
+        "transforms.filterExample1.type":"io.confluent.connect.transforms.Filter$Value",
+        "transforms.filterExample1.filter.condition":"$.[?(@.samplingField < 15)]",
+        "transforms.filterExample1.filter.type":"include",
+        "transforms.filterExample1.missing.or.null.behavior":"fail",
+        "project" : "teads-sandbox-146410",
+        "defaultDataset" : "sandbox_ssp_test",
+        "keyfile" : "/root/bq-service-account.json"
         }
 '
 ----
