@@ -66,7 +66,7 @@ curl -i -X PUT -H "Accept:application/json" \
         "connector.class": "com.wepay.kafka.connect.bigquery.BigQuerySinkConnector",
         "key.converter":"org.apache.kafka.connect.storage.StringConverter",
         "tasks.max": "1",
-        "topics": "test2",
+        "topics": "test3",
         "sanitizeTopics" : "true",
         "autoCreateTables" : "true",
         "autoUpdateSchemas" : "true",
