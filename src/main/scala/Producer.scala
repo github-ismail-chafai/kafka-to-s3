@@ -17,7 +17,7 @@ object Producer extends App {
 
   val kafkaBootstrapServer = "kafka:29092"
   val schemaRegistryUrl = "http://schema-registry:8081"
-  val topicName = "test3"
+  val topicName = "demossp2"
 
   val props = new Properties()
   props.put("bootstrap.servers", kafkaBootstrapServer)
@@ -75,7 +75,7 @@ object Producer extends App {
 
       logger.info(s"${ack.toString} written to partition ${ack.partition.toString}")
       logger.info(s"sleep for one second...")
-      Thread.sleep(1000)
+      Thread.sleep(500)
     }
   }
   catch {
