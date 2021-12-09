@@ -17,7 +17,7 @@ object Producer extends App {
 
   val kafkaBootstrapServer = "kafka:29092"
   val schemaRegistryUrl = "http://schema-registry:8081"
-  val topicName = "demossp2"
+  val topicName = "demossp3"
 
   val props = new Properties()
   props.put("bootstrap.servers", kafkaBootstrapServer)
